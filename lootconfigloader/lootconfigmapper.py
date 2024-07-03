@@ -1,4 +1,5 @@
 import os
+from distutils.version import LooseVersion
 from typing import List
 from mobase import (
     IOrganizer,
@@ -34,7 +35,13 @@ class LOOTConfigMapper(IPluginFileMapper):
         return "LOOT Config Loader"
 
     def settings(self) -> List["PluginSetting"]:
-        return []
+        return [
+            PluginSetting(
+                "path",
+                "Path relative to instance base folder",
+                "LOOT Config Files",
+            ),
+        ]
 
     def version(self) -> "VersionInfo":
         return VersionInfo(1, 0, 0, 0, ReleaseType.FINAL)
@@ -46,7 +53,10 @@ class LOOTConfigMapper(IPluginFileMapper):
         return mappings
 
     def get_source_path(self) -> str:
-        return os.path.join(self.organizer.basePath(), "LOOT Config Files")
+        return os.path.join(
+            self.organizer.basePath(),
+            self.organizer.pluginSetting(self.name(), "path"),
+        )
 
     def get_destination_path(self) -> str:
         return os.path.join(os.environ["LOCALAPPDATA"], "LOOT")
