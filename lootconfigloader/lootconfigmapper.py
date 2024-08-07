@@ -1,5 +1,4 @@
 import os
-from distutils.version import LooseVersion
 from typing import List
 from mobase import (
     IOrganizer,
@@ -58,12 +57,12 @@ class LOOTConfigMapper(IPluginFileMapper):
         return Mapping(source, destination, is_directory=True, create_target=False)
 
     def finish_init(self, window: QMainWindow) -> None:
-        mo2version = LooseVersion(self.organizer.appVersion().canonicalString())
+        mo2version = self.organizer.appVersion()
         source = self.get_source_path()
         os.makedirs(source, exist_ok=True)
 
         destination = self.get_destination_path()
-        if mo2version >= LooseVersion("2.5.0.0"):
+        if mo2version >= VersionInfo(2, 5, 0):
             destination = os.path.join(destination, "games")
         game_name = self.organizer.managedGame().gameName()
         os.makedirs(os.path.join(destination, game_name), exist_ok=True)
